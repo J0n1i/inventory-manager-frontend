@@ -14,7 +14,6 @@ export default function Items({ navigation }) {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 setItems(data)
             })
             .catch(err => console.log(err))
@@ -76,7 +75,7 @@ export default function Items({ navigation }) {
 
                                 <Text style={{
                                     fontSize: 15
-                                }}>{item.description}</Text>
+                                }}>{item?.description}</Text>
                             </View>
 
                             <Text style={{

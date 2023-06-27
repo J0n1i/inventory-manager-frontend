@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Text, TextInput, Button } from 'react-native'
+import { Text, TextInput, Button, View, Pressable } from 'react-native'
 import Barcode from '@kichiyaki/react-native-barcode-generator'
 
 function SaveItem({ navigation, route }) {
@@ -16,6 +16,9 @@ function SaveItem({ navigation, route }) {
         }
     }, [route.params?.barcode])
 
+    //check if barcode is already in database
+
+
 
     function saveItem() {
         fetch("http://192.168.1.109:3000/items", {
@@ -31,8 +34,15 @@ function SaveItem({ navigation, route }) {
                 navigation.navigate('Home')
             })
             .catch(err => console.log(err))
+    }
 
-
+    function setAmount(e) {
+        if (e != '') {
+            setItem({ ...item, quantity: parseInt(e) })
+        }
+        else {
+            setItem({ ...item, quantity: 0 })
+        }
     }
 
 
@@ -51,11 +61,77 @@ function SaveItem({ navigation, route }) {
                 style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
             />
             <Text style={{ fontSize: 20 }}>quantity</Text>
-            <TextInput
-                onChangeText={text => setItem({ ...item, quantity: text })}
-                value={item.quantity}
-                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-            />
+
+
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                }}>
+
+                <Pressable
+                    onPress={() => {
+                        if (item.quantity > 0) {
+                            setItem({ ...item, quantity: item.quantity - 1 })
+                        }
+
+                    }}
+                    style={{
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        justifyContent: 'center',
+                        paddingVertical: 10,
+                        paddingHorizontal: 20,
+                        margin: 0,
+                        borderBottomStartRadius: 10,
+                        borderTopStartRadius: 10,
+                        backgroundColor: 'lightgray'
+
+                    }}>
+                    <Text style={{
+                        fontSize: 20,
+                        margin: 0,
+                        padding: 0
+                    }}>-</Text>
+                </Pressable>
+
+
+                <TextInput
+
+                    onChangeText={text => { setAmount(text) }}
+                    keyboardType='numeric'
+                    value={item.quantity.toString()}
+                    style={{
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        width: 100,
+                        textAlign: 'center',
+                        fontSize: 20,
+                        paddingVertical: 10,
+                    }}
+                />
+
+                <Pressable
+                    onPress={() => {
+                        //item.quantity int
+                        setItem({ ...item, quantity: item.quantity + 1 })
+                    }}
+                    style={{
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        justifyContent: 'center',
+                        paddingHorizontal: 20,
+                        margin: 0,
+                        borderBottomEndRadius: 10,
+                        borderTopEndRadius: 10,
+                        backgroundColor: 'lightgray',
+                        paddingVertical: 10,
+                    }}>
+                    <Text style={{
+                        fontSize: 20,
+                    }}>+</Text>
+                </Pressable>
+            </View>
 
             {item.barcode != '' ?
                 <Barcode value={item.barcode.toString()}
